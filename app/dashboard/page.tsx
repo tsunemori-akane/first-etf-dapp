@@ -1,20 +1,27 @@
 "use client";
-
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Head from "next/head";
 import Invest from "./components/invest";
 import Redeem from "./components/redeem";
 import { useAccount } from "wagmi";
 import { useWalletStore } from "../providers/wallet-store-provider";
-import { useEffect } from "react";
+import { createContext, useEffect } from "react";
+
+type PageContextType = {
+  needRefresh: boolean;
+  refetchETFHolding: () => void;
+  refetchTokensHolding: () => void;
+};
+const PageContext = createContext<PageContextType | null>(null);
 export default function Page() {
   const { isConnected, address } = useAccount();
-  const {
-    isConnected: isConnectedInGlobalState,
-    setConnect,
-    setAddress,
-  } = useWalletStore((state) => state);
 
+  const { setConnect, setAddress } = useWalletStore((state) => state);
+  const contextVal = {
+    needRefresh: false,
+    refetchETFHolding: () => {},
+    refetchTokensHolding: () => {},
+  };
   useEffect(() => {
     if (isConnected) {
       setConnect(isConnected);
@@ -38,10 +45,12 @@ export default function Page() {
           <div></div>
           <ConnectButton />
         </div>
-        <div className="flex">
-          <Invest />
-          <Redeem />
-        </div>
+        <PageContext.Provider value={contextVal}>
+          <div className="flex px-5 py-5">
+            <Invest />
+            <Redeem />
+          </div>
+        </PageContext.Provider>
       </main>
 
       <footer className="flex items-center justify-center">
