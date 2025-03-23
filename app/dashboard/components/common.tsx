@@ -1,10 +1,11 @@
-import type { TokenDetail } from "./interface";
+import type { TokenDetail } from "../interface";
 import { useSimulateContract, useWriteContract, useReadContract } from "wagmi";
 import { erc20Abi } from "dashboard/abis/erc20";
-import { etfAddressv1 } from "../constants";
+import { etfAddressv4 } from "../constants";
 import { useWalletStore } from "@/app/providers/wallet-store-provider";
 import { cn } from "@/lib/utils";
 import { useEffect, useMemo } from "react";
+import { usePageContext } from "../context";
 export function TokenHoldings({ holdingNum }: { holdingNum?: string }) {
   return (
     <div className="flex flex-row-reverse">
@@ -18,15 +19,15 @@ export function TokenHoldings({ holdingNum }: { holdingNum?: string }) {
 type InputFeildProps = {
   children?: React.ReactNode;
   token: TokenDetail;
-  updateTokensMap: <K extends keyof TokenDetail>(
-    symbol: string,
-    key: K,
-    num: TokenDetail[K]
-  ) => void;
 };
-export function InputFeild({ token, updateTokensMap }: InputFeildProps) {
+export function InputFeildForInvest({ token }: InputFeildProps) {
   const { address, isConnected } = useWalletStore((state) => state);
-  const { writeContract, isPending, isSuccess } = useWriteContract({});
+  const pageContext = usePageContext();
+  const {
+    writeContract,
+    isPending,
+    isSuccess: isSuccessOfAuth,
+  } = useWriteContract({});
   const {
     data: allowanceData,
     refetch: refetchAllowance,
@@ -35,7 +36,7 @@ export function InputFeild({ token, updateTokensMap }: InputFeildProps) {
     abi: erc20Abi,
     address: token?.address as `0x${string}`,
     functionName: "allowance",
-    args: [address!, etfAddressv1],
+    args: [address!, etfAddressv4],
     query: {
       enabled: !!address && isConnected,
     },
@@ -46,7 +47,7 @@ export function InputFeild({ token, updateTokensMap }: InputFeildProps) {
     abi: erc20Abi,
     functionName: "approve",
     args: [
-      etfAddressv1,
+      etfAddressv4,
       BigInt(
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
       ),
@@ -57,14 +58,14 @@ export function InputFeild({ token, updateTokensMap }: InputFeildProps) {
   });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccessOfAuth) {
       refetchAllowance();
     }
-  }, [isSuccess]);
+  }, [isSuccessOfAuth]);
 
   useEffect(() => {
     if (allowanceData)
-      updateTokensMap(token.symbol, "allowance", allowanceData);
+      pageContext?.updateTokensMap(token.symbol, "allowance", allowanceData);
   }, [allowanceData]);
 
   const authorizingStatus = useMemo(
@@ -97,6 +98,33 @@ export function InputFeild({ token, updateTokensMap }: InputFeildProps) {
           placeholder=""
           readOnly={true}
           value={token.payAmount}
+        />
+        {token?.symbol}
+      </label>
+    </fieldset>
+  );
+}
+
+export function InputFeildForRedeem({
+  token,
+}: {
+  children?: React.ReactNode;
+  token: TokenDetail;
+}) {
+  const { address, isConnected } = useWalletStore((state) => state);
+
+  return (
+    <fieldset className="fieldset">
+      <legend className="fieldset-legend">You Receive</legend>
+      <TokenHoldings holdingNum={token?.available} />
+      <label className="input input-lg">
+        {" "}
+        <input
+          type="text"
+          className="grow"
+          placeholder=""
+          readOnly={true}
+          value={token.redeemAmount}
         />
         {token?.symbol}
       </label>

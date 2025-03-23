@@ -5,7 +5,6 @@ import { WalletStoreProvider } from "./providers/wallet-store-provider";
 import { headers } from "next/headers";
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import "@arco-design/web-react/dist/css/arco.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
