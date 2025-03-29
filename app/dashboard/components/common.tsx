@@ -19,10 +19,12 @@ export function TokenHoldings({ holdingNum }: { holdingNum?: string }) {
 type InputFeildProps = {
   children?: React.ReactNode;
   token: TokenDetail;
+  index: number;
 };
-export function InputFeildForInvest({ token }: InputFeildProps) {
+export function InputFeildForInvest({ token, index }: InputFeildProps) {
   const { address, isConnected } = useWalletStore((state) => state);
   const pageContext = usePageContext();
+
   const {
     writeContract,
     isPending,
@@ -64,8 +66,12 @@ export function InputFeildForInvest({ token }: InputFeildProps) {
   }, [isSuccessOfAuth]);
 
   useEffect(() => {
-    if (allowanceData)
-      pageContext?.updateTokensMap(token.symbol, "allowance", allowanceData);
+    if (allowanceData) {
+      pageContext?.setDetailsOfToken((tokens) => {
+        tokens[index].allowance = allowanceData;
+        return tokens;
+      });
+    }
   }, [allowanceData]);
 
   const authorizingStatus = useMemo(
@@ -75,10 +81,11 @@ export function InputFeildForInvest({ token }: InputFeildProps) {
   return (
     <fieldset className="fieldset">
       <legend className="fieldset-legend">You Pay</legend>
+
       <TokenHoldings holdingNum={token?.available} />
       <label className="input input-lg">
         {" "}
-        {!allowanceData && (
+        {!token?.allowance && (
           <button
             className={cn("btn btn-xs", "btn-error")}
             disabled={authorizingStatus}
@@ -89,7 +96,7 @@ export function InputFeildForInvest({ token }: InputFeildProps) {
             {authorizingStatus ? "Authorizing" : "Unauthorized"}
           </button>
         )}
-        {!!allowanceData && (
+        {!!token?.allowance && (
           <div className="badge badge-accent cursor-none">Authorized</div>
         )}
         <input
@@ -107,9 +114,11 @@ export function InputFeildForInvest({ token }: InputFeildProps) {
 
 export function InputFeildForRedeem({
   token,
+  index,
 }: {
   children?: React.ReactNode;
   token: TokenDetail;
+  index: number;
 }) {
   const { address, isConnected } = useWalletStore((state) => state);
 

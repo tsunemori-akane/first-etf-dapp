@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@ant-design/icons': ^6.0.0
   '@ant-design/v5-patch-for-react-19': ^1.0.3
   '@eslint/js': ^9.21.0
   '@rainbow-me/rainbowkit': ^2.2.3
@@ -28,6 +29,7 @@ specifiers:
   zustand: ^5.0.3
 
 dependencies:
+  '@ant-design/icons': 6.0.0_upmzqgzhjrquwzo2dphtigtdgi
   '@ant-design/v5-patch-for-react-19': 1.0.3_a5yww6f5a66xjrn36vufuqzcx4
   '@rainbow-me/rainbowkit': 2.2.3_vcbyieta55s7u7kijtzcljevia
   '@tailwindcss/postcss': 4.0.8
@@ -73,6 +75,12 @@ packages:
       '@ant-design/fast-color': 2.0.6
     dev: false
 
+  /@ant-design/colors/8.0.0:
+    resolution: {integrity: sha512-6YzkKCw30EI/E9kHOIXsQDHmMvTllT8STzjMb4K2qzit33RW2pqCJP0sk+hidBntXxE+Vz4n1+RvCTfBw6OErw==}
+    dependencies:
+      '@ant-design/fast-color': 3.0.0
+    dev: false
+
   /@ant-design/cssinjs-utils/1.1.3_upmzqgzhjrquwzo2dphtigtdgi:
     resolution: {integrity: sha512-nOoQMLW1l+xR1Co8NFVYiP8pZp3VjIIzqV6D6ShYF2ljtdwWJn5WSsH+7kvCktXL/yhEtWURKOfH5Xz/gzlwsg==}
     peerDependencies:
@@ -110,6 +118,11 @@ packages:
       '@babel/runtime': 7.26.7
     dev: false
 
+  /@ant-design/fast-color/3.0.0:
+    resolution: {integrity: sha512-eqvpP7xEDm2S7dUzl5srEQCBTXZMmY3ekf97zI+M2DHOYyKdJGH0qua0JACHTqbkRnD/KHFQP9J1uMJ/XWVzzA==}
+    engines: {node: '>=8.x'}
+    dev: false
+
   /@ant-design/icons-svg/4.4.2:
     resolution: {integrity: sha512-vHbT+zJEVzllwP+CM+ul7reTEfBR0vgxFe7+lREAsAA7YGsYpboiq2sQNeQeRvh09GfQgs/GyFEvZpJ9cLXpXA==}
     dev: false
@@ -126,6 +139,21 @@ packages:
       '@babel/runtime': 7.26.7
       classnames: 2.5.1
       rc-util: 5.44.4_upmzqgzhjrquwzo2dphtigtdgi
+      react: 19.0.0
+      react-dom: 19.0.0_react@19.0.0
+    dev: false
+
+  /@ant-design/icons/6.0.0_upmzqgzhjrquwzo2dphtigtdgi:
+    resolution: {integrity: sha512-o0aCCAlHc1o4CQcapAwWzHeaW2x9F49g7P3IDtvtNXgHowtRWYb7kiubt8sQPFvfVIVU/jLw2hzeSlNt0FU+Uw==}
+    engines: {node: '>=8'}
+    peerDependencies:
+      react: '>=16.0.0'
+      react-dom: '>=16.0.0'
+    dependencies:
+      '@ant-design/colors': 8.0.0
+      '@ant-design/icons-svg': 4.4.2
+      '@rc-component/util': 1.2.1_upmzqgzhjrquwzo2dphtigtdgi
+      classnames: 2.5.1
       react: 19.0.0
       react-dom: 19.0.0_react@19.0.0
     dev: false
@@ -1106,6 +1134,17 @@ packages:
       rc-util: 5.44.4_upmzqgzhjrquwzo2dphtigtdgi
       react: 19.0.0
       react-dom: 19.0.0_react@19.0.0
+    dev: false
+
+  /@rc-component/util/1.2.1_upmzqgzhjrquwzo2dphtigtdgi:
+    resolution: {integrity: sha512-AUVu6jO+lWjQnUOOECwu8iR0EdElQgWW5NBv5vP/Uf9dWbAX3udhMutRlkVXjuac2E40ghkFy+ve00mc/3Fymg==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+    dependencies:
+      react: 19.0.0
+      react-dom: 19.0.0_react@19.0.0
+      react-is: 18.3.1
     dev: false
 
   /@safe-global/safe-apps-provider/0.18.5_typescript@5.5.2:

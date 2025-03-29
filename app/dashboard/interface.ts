@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 // 定义 TokenDetail 类型
 export interface TokenDetail {
   address: string;
@@ -19,6 +20,7 @@ export type PageContextType = {
     num: TokenDetail[K]
   ) => void;
   tokensMap: Record<string, TokenDetail>;
+  setDetailsOfToken: Dispatch<SetStateAction<TokenDetail[]>>;
 };
 // exposed function by redeem
 export interface RedeemExpose {

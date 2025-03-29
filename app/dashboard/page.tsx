@@ -40,6 +40,7 @@ export default function Page() {
   const contextVal = {
     needRefresh: false,
     refetchETFHolding: () => {
+      console.log("重新获取ETF余额");
       redeemRef.current?.refetchEtfBalance();
     },
     refetchTokensHolding: () => {},
@@ -192,16 +193,8 @@ export default function Page() {
         </div>
         <PageContext.Provider value={contextVal}>
           <div className="flex px-5 py-5">
-            <Invest
-              ref={investRef}
-              tokensMap={tokensMap}
-              setDetailsOfToken={setDetailsOfToken}
-            />
-            <Redeem
-              ref={redeemRef}
-              tokens={tokens}
-              setDetailsOfToken={setDetailsOfToken}
-            />
+            <Invest ref={investRef} />
+            <Redeem ref={redeemRef} />
           </div>
         </PageContext.Provider>
       </main>

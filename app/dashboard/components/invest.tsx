@@ -3,33 +3,23 @@ import { useReadContract, useReadContracts, useWriteContract } from "wagmi";
 import { v4_abi } from "dashboard/abis/etfv4-abi";
 import { etfAddressv4 } from "dashboard/constants";
 import { useWalletStore } from "@/app/providers/wallet-store-provider";
-import {
-  useEffect,
-  useMemo,
-  useState,
-  forwardRef,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { parseUnits, formatUnits } from "viem";
 import { Spin, message } from "antd";
-import type { TokenDetail } from "../interface";
 import { usePageContext } from "../context";
-type InvestProps = {
-  tokensMap: Record<string, TokenDetail>;
-  setDetailsOfToken: Dispatch<SetStateAction<TokenDetail[]>>;
-};
+import { LoadingOutlined } from "@ant-design/icons";
+type InvestProps = {};
 const Invest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
   // useImperativeHandle(ref, () => ({
   //   refetchBalanceData,
   // }));
-  const { tokensMap, setDetailsOfToken } = props;
+  const pageContext = usePageContext();
   const { address, isConnected } = useWalletStore((state) => state);
   const [mintETFAmount, setMintETFAmount] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
-  const pageContext = usePageContext();
-  console.log(pageContext);
+  const [messageApi, contextHolder] = message.useMessage();
+
   // 根据 mintETFAmount 读取 investTokenAmounts
   // 前端？？
   const { data: investAmountsData, refetch: refetchGetInvestAmounts } =
@@ -51,7 +41,7 @@ const Invest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
 
   useEffect(() => {
     if (investAmountsData as bigint[]) {
-      setDetailsOfToken((prevTokens) =>
+      pageContext?.setDetailsOfToken((prevTokens) =>
         prevTokens.map((token, index) => {
           const payAmount = (investAmountsData as bigint[])[index]; // 获取对应的 payAmount
           const formattedPayAmount = formatUnits(payAmount, token.decimals);
@@ -84,7 +74,7 @@ const Invest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
   }
   useEffect(() => {
     if (isSuccess) {
-      //Message.success("Invest successful!");
+      console.log("成功");
       pageContext?.refetchETFHolding();
     } else if (error) {
       console.error("Invest failed, check your available or your gas.");
@@ -97,7 +87,7 @@ const Invest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
     } else setLoading(false);
   }, [isPending]);
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading} indicator={<LoadingOutlined spin />}>
       <div className="card w-96 bg-base-100 card-xl shadow-sm">
         <div className="card-body">
           <h2 className="card-title">Invest</h2>
@@ -118,10 +108,9 @@ const Invest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
           </fieldset>
 
           <div className="divider"></div>
-          {tokensMap &&
-            Object.values(tokensMap).map((token, index) => {
-              // console.log("out", token);
-              return <InputFeild token={token} key={index} />;
+          {pageContext?.tokensMap &&
+            Object.values(pageContext?.tokensMap).map((token, index) => {
+              return <InputFeild token={token} index={index} key={index} />;
             })}
           <div className="justify-end card-actions">
             <button className="btn btn-primary" onClick={() => handleInvest()}>
