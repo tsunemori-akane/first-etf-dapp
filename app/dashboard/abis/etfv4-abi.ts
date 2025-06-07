@@ -882,4 +882,4 @@ export const v4_abi = [
     type: "function",
   },
   { stateMutability: "payable", type: "receive" },
-] as const;
+];

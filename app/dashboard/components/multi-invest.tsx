@@ -9,7 +9,7 @@ import { Spin, message } from "antd";
 import { usePageContext } from "../context";
 import { LoadingOutlined } from "@ant-design/icons";
 type InvestProps = {};
-const Invest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
+const MultiInvest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
   // useImperativeHandle(ref, () => ({
   //   refetchBalanceData,
   // }));
@@ -87,8 +87,8 @@ const Invest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
     } else setLoading(false);
   }, [isPending]);
   return (
-    <Spin spinning={loading} indicator={<LoadingOutlined spin />}>
-      <div className="card w-96 bg-base-100 card-xl shadow-sm">
+    <div className="card w-96 bg-base-100 card-xl shadow-sm">
+      <Spin spinning={loading} indicator={<LoadingOutlined spin />}>
         <div className="card-body">
           <h2 className="card-title">Invest</h2>
 
@@ -127,8 +127,8 @@ const Invest = forwardRef<HTMLElement, InvestProps>((props, ref) => {
             </dialog>
           </div>
         </div>
-      </div>
-    </Spin>
+      </Spin>
+    </div>
   );
 });
-export default Invest;
+export default MultiInvest;

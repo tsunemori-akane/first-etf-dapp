@@ -1,17 +1,13 @@
 "use client";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Head from "next/head";
-import Invest from "./components/invest";
+import MultiInvest from "./components/multi-invest";
+import SingleInvest from "./components/single-invest";
 import Redeem from "./components/redeem";
 import { v4_abi } from "dashboard/abis/etfv4-abi";
 import { erc20Abi } from "dashboard/abis/erc20";
 import { etfAddressv4 } from "dashboard/constants";
-import {
-  useAccount,
-  useReadContract,
-  useReadContracts,
-  useWriteContract,
-} from "wagmi";
+import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { useWalletStore } from "../providers/wallet-store-provider";
 import { useEffect, useRef, useState, useMemo } from "react";
 import type { TokenDetail, RedeemExpose } from "./interface";
@@ -47,6 +43,7 @@ export default function Page() {
     updateTokensMap,
     tokensMap,
     setDetailsOfToken,
+    tokens,
   };
   useEffect(() => {
     if (isConnected) {
@@ -125,9 +122,10 @@ export default function Page() {
     },
   });
 
-  // 处理 symbol 和 decimals 数据
+  // 处理 symbol decimals balance 数据
   useEffect(() => {
     if (
+      balanceData &&
       symbolDecimalsData &&
       Array.isArray(symbolDecimalsData) &&
       tokenAddresses &&
@@ -138,10 +136,11 @@ export default function Page() {
           const symbol = symbolDecimalsData[index]?.result as string;
           const decimals = symbolDecimalsData[index + tokenAddresses.length]
             ?.result as number;
-
+          const available = balanceData[index]?.result as bigint | undefined;
           return {
             address: tokenAddress,
             symbol,
+            available,
             decimals,
             payAmount: "0",
             redeemAmount: "0",
@@ -150,30 +149,7 @@ export default function Page() {
       );
       setDetailsOfToken(tokensWithDetails);
     }
-  }, [symbolDecimalsData, tokenAddresses]);
-
-  // 处理 balanceOf 数据
-  useEffect(() => {
-    if (
-      balanceData &&
-      Array.isArray(balanceData) &&
-      tokenAddresses &&
-      Array.isArray(tokenAddresses)
-    ) {
-      setDetailsOfToken((prevTokens) =>
-        prevTokens.map((token, index) => {
-          const balance = balanceData[index]?.result as bigint | undefined;
-          const available = balance
-            ? (Number(balance) / Math.pow(10, token.decimals)).toFixed(2) // 修改为带小数的格式，最多两位
-            : "0";
-          return {
-            ...token,
-            available,
-          };
-        })
-      );
-    }
-  }, [balanceData, tokenAddresses]);
+  }, [symbolDecimalsData, balanceData, tokenAddresses]);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -186,15 +162,38 @@ export default function Page() {
         <link href="/favicon.ico" rel="icon" />
       </Head>
 
-      <main className="h-full flex-1 p-5">
+      <main className="h-full flex-1 p-5 flex flex-col overflow-hidden">
         <div className="flex justify-between items-center">
           <div></div>
           <ConnectButton />
         </div>
         <PageContext.Provider value={contextVal}>
-          <div className="flex px-5 py-5">
-            <Invest ref={investRef} />
-            <Redeem ref={redeemRef} />
+          <div className="tabs tabs-border">
+            <input
+              type="radio"
+              name="trade"
+              className="tab"
+              aria-label="Multi"
+              defaultChecked
+            />
+            <div className="tab-content border-base-300 bg-base-100 p-10">
+              <div className="flex flex-1 px-5 py-5 h-full">
+                <MultiInvest ref={investRef} />
+                <Redeem ref={redeemRef} />
+              </div>
+            </div>
+
+            <input
+              type="radio"
+              name="trade"
+              className="tab"
+              aria-label="Single"
+            />
+            <div className="tab-content border-base-300 bg-base-100 p-10">
+              <div className="flex flex-1 px-5 py-5 h-full">
+                <SingleInvest />
+              </div>
+            </div>
           </div>
         </PageContext.Provider>
       </main>

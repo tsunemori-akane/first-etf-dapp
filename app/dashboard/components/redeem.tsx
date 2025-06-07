@@ -100,15 +100,18 @@ const Redeem = forwardRef<RedeemExpose, RedeemProps>((props, ref) => {
     } else setLoading(false);
   }, [isPending]);
   return (
-    <Spin spinning={loading} indicator={<LoadingOutlined spin />}>
-      <div className="card w-96 bg-base-100 card-xl shadow-sm">
+    <div className="card w-96 bg-base-100 card-xl shadow-sm ">
+      <Spin spinning={loading} indicator={<LoadingOutlined spin />}>
         <div className="card-body flex flex-column justify-between">
           <div>
             <h2 className="card-title">Redeem</h2>
             <fieldset className="fieldset">
               <legend className="fieldset-legend">You Pay</legend>
               <div className="flex flex-row-reverse">
-                <TokenHoldings holdingNum={balanceOfETF} />
+                <TokenHoldings
+                  holdingNum={parseUnits(balanceOfETF, 18)}
+                  decimal={18}
+                />
                 {isRefetching && (
                   <span className="loading loading-spinner loading-xs"></span>
                 )}
@@ -148,8 +151,8 @@ const Redeem = forwardRef<RedeemExpose, RedeemProps>((props, ref) => {
             </button>
           </div>
         </div>
-      </div>
-    </Spin>
+      </Spin>
+    </div>
   );
 });
 
